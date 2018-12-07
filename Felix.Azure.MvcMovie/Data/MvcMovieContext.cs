@@ -1,5 +1,6 @@
 ﻿using Felix.Azure.MvcMovie.Entity;
 using Microsoft.EntityFrameworkCore;
+using Felix.Azure.MvcMovie.Entity.Model;
 
 namespace Felix.Azure.MvcMovie
 {
@@ -11,5 +12,7 @@ namespace Felix.Azure.MvcMovie
         }
 
         public DbSet<Movie> Movie { get; set; }
+
+        public DbSet<Felix.Azure.MvcMovie.Entity.Model.Actor> Actor { get; set; }
     }
 }

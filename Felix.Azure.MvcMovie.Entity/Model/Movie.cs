@@ -13,8 +13,6 @@ namespace Felix.Azure.MvcMovie.Entity
 
         [Display(Name = "Release Date")]
         [DataType(DataType.Date)]
-        [Range(typeof(DateTime), "1/1/1966", "1/1/2060")]
-        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
         public DateTime ReleaseDate { get; set; }
 
         [Range(0.01, 1000000)]
