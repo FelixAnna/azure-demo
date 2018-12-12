@@ -1,10 +1,8 @@
-﻿using System;
+﻿using Felix.Azure.MvcMovie.Models;
+using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Felix.Azure.MvcMovie.Models;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
 
 namespace Felix.Azure.MvcMovie.Controllers
 {
@@ -13,10 +11,12 @@ namespace Felix.Azure.MvcMovie.Controllers
     public class ActorsApiController : ControllerBase
     {
         private readonly MvcMovieContext _context;
+        private readonly AzureStorageCreator _storageCreator;
 
-        public ActorsApiController(MvcMovieContext context)
+        public ActorsApiController(MvcMovieContext context, AzureStorageCreator storageCreator)
         {
             _context = context;
+            _storageCreator = storageCreator;
         }
 
         // GET: api/ActorsApi
@@ -47,6 +47,14 @@ namespace Felix.Azure.MvcMovie.Controllers
                 Description = x.Description,
             }).FirstOrDefault();
             return Ok(results);
+        }
+
+        [HttpGet("test/create-file")]
+        public async Task<ActionResult<string>> TestCreateFileAsync()
+        {
+            var result = await _storageCreator.CreateLogFileAsync();
+
+            return Ok(result);
         }
     }
 }

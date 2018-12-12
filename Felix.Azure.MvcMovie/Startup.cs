@@ -40,10 +40,13 @@ namespace Felix.Azure.MvcMovie
             services.AddDbContext<MvcMovieContext>(options =>
                     options.UseSqlServer(Configuration.GetConnectionString("MvcMovieContext")));
 
+            DIConfiguration(services);
+
             // Register the Swagger generator, defining 1 or more Swagger documents
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new Info {
+                c.SwaggerDoc("v1", new Info
+                {
                     Version = "v1",
                     Title = "ToDo API",
                     Description = "A simple example ASP.NET Core Web API",
@@ -85,6 +88,11 @@ namespace Felix.Azure.MvcMovie
                     name: "default",
                     template: "{controller=Home}/{action=Index}/{id?}");
             });
+        }
+
+        private void DIConfiguration(IServiceCollection services)
+        {
+            services.AddScoped<AzureStorageCreator>();
         }
     }
 }
