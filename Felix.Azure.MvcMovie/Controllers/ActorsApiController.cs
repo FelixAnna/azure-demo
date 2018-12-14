@@ -56,5 +56,11 @@ namespace Felix.Azure.MvcMovie.Controllers
 
             return Ok(result);
         }
+
+        [HttpGet("test/exception")]
+        public ActionResult TestException()
+        {
+            throw new System.Exception("Custom exception");
+        }
     }
 }
