@@ -10,8 +10,20 @@ namespace Felix.Azure.MvcMovie
 {
     public class Program
     {
+        private static IConfigurationRoot Configuration { get; set; }
+        const string SecretName = "CacheConnection";
+        private static void InitializeConfiguration()
+        {
+            var builder = new ConfigurationBuilder()
+                .AddUserSecrets<Program>();
+
+            Configuration = builder.Build();
+        }
+
         public static void Main(string[] args)
         {
+            InitializeConfiguration();
+
             var host = CreateWebHostBuilder(args)
                 .ConfigureLogging((hostingContext, logging) =>
                 {

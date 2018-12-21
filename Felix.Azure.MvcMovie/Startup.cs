@@ -1,4 +1,4 @@
-﻿using Felix.Azure.MvcMovie.DARepositories;
+﻿using Felix.Azure.MvcMovie.Repositories;
 using Felix.Azure.MvcMovie.Filters;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -7,12 +7,14 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using StackExchange.Redis;
 using Swashbuckle.AspNetCore.Swagger;
 
 namespace Felix.Azure.MvcMovie
 {
     public class Startup
     {
+        const string SecretName = "CacheConnection";
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -90,6 +92,11 @@ namespace Felix.Azure.MvcMovie
         {
             services.AddScoped<AzureStorageCreator>();
             services.AddScoped<IMovieRepository, MovieRepository>();
+            services.AddSingleton((svc) =>
+            {
+                string cacheConnection = Configuration[SecretName];
+                return ConnectionMultiplexer.Connect(cacheConnection);
+            });
         }
     }
 }

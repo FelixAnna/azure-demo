@@ -1,4 +1,4 @@
-﻿using Felix.Azure.MvcMovie.DARepositories;
+﻿using Felix.Azure.MvcMovie.Repositories;
 using Felix.Azure.MvcMovie.Entity;
 using Felix.Azure.MvcMovie.Models;
 using Microsoft.AspNetCore.Mvc;

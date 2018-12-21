@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using Felix.Azure.MvcMovie.Entity;
 
-namespace Felix.Azure.MvcMovie.DARepositories
+namespace Felix.Azure.MvcMovie.Repositories
 {
     public interface IMovieRepository
     {
