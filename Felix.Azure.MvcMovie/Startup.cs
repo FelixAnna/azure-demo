@@ -1,4 +1,5 @@
-﻿using Felix.Azure.MvcMovie.Filters;
+﻿using Felix.Azure.MvcMovie.DARepositories;
+using Felix.Azure.MvcMovie.Filters;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -36,7 +37,7 @@ namespace Felix.Azure.MvcMovie
                     options.UseSqlServer(Configuration.GetConnectionString("MvcMovieContext")));
 
             DIConfiguration(services);
-            
+
             // Register the Swagger generator, defining 1 or more Swagger documents
             services.AddSwaggerGen(c =>
             {
@@ -88,6 +89,7 @@ namespace Felix.Azure.MvcMovie
         private void DIConfiguration(IServiceCollection services)
         {
             services.AddScoped<AzureStorageCreator>();
+            services.AddScoped<IMovieRepository, MovieRepository>();
         }
     }
 }
