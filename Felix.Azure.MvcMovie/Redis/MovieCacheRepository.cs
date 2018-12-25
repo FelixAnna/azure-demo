@@ -1,6 +1,7 @@
 ﻿using Felix.Azure.MvcMovie.Entity;
 using Newtonsoft.Json;
 using StackExchange.Redis;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -64,7 +65,18 @@ namespace Felix.Azure.MvcMovie.Redis
             string key = "Movies";
             if (_connection.GetDatabase().KeyExists(key))
             {
-                return JsonConvert.DeserializeObject<List<Movie>>(await _connection.GetDatabase().StringGetAsync(key)).Where(x => x.Genre == movieGenre && x.Title.Contains(searchString)).ToList();
+                var movies = JsonConvert.DeserializeObject<IEnumerable<Movie>>(await _connection.GetDatabase().StringGetAsync(key));
+                if (!String.IsNullOrEmpty(searchString))
+                {
+                    movies = movies.Where(s => s.Title.Contains(searchString));
+                }
+
+                if (!String.IsNullOrEmpty(movieGenre))
+                {
+                    movies = movies.Where(x => x.Genre == movieGenre);
+                }
+
+                return movies.ToList();
             }
 
             return null;
