@@ -7,24 +7,25 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using Felix.Azure.MvcMovie.DataAccess;
 
 namespace Felix.Azure.MvcMovie.Controllers
 {
     public class MvcMoviesController : Controller
     {
-        private readonly IMovieRepository _repository;
+        private readonly IMovieDataAccess _dataAccess;
 
-        public MvcMoviesController(IMovieRepository repository)
+        public MvcMoviesController(IMovieDataAccess dataAccess)
         {
-            _repository = repository;
+            _dataAccess = dataAccess;
         }
 
         // GET: MvcMovies
         public async Task<IActionResult> Index(string movieGenre, string searchString)
         {
             var movieGenreVM = new MovieGenreViewModel();
-            movieGenreVM.Genres = new SelectList(await _repository.GetGenreAsync());
-            movieGenreVM.Movies = await _repository.GetMovies(movieGenre, searchString);
+            movieGenreVM.Genres = new SelectList(await _dataAccess.GetGenreAsync());
+            movieGenreVM.Movies = await _dataAccess.GetMovies(movieGenre, searchString);
             movieGenreVM.SearchString = searchString;
 
             return View(movieGenreVM);
@@ -33,7 +34,7 @@ namespace Felix.Azure.MvcMovie.Controllers
         // GET: MvcMovies/Details/5
         public async Task<IActionResult> Details(int? id)
         {
-            var movie = await _repository.GetMovieByIdAsync(id);
+            var movie = await _dataAccess.GetMovieByIdAsync(id);
             if (movie == null)
             {
                 return NotFound();
@@ -57,7 +58,7 @@ namespace Felix.Azure.MvcMovie.Controllers
         {
             if (ModelState.IsValid)
             {
-                await _repository.SaveAsync(movie);
+                await _dataAccess.SaveAsync(movie);
                 return RedirectToAction(nameof(Index));
             }
 
@@ -67,7 +68,7 @@ namespace Felix.Azure.MvcMovie.Controllers
         // GET: MvcMovies/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
-            var movie = await _repository.GetMovieByIdAsync(id);
+            var movie = await _dataAccess.GetMovieByIdAsync(id);
             if (movie == null)
             {
                 return NotFound();
@@ -90,7 +91,7 @@ namespace Felix.Azure.MvcMovie.Controllers
 
             if (ModelState.IsValid)
             {
-                await _repository.SaveAsync(movie);
+                await _dataAccess.SaveAsync(movie);
                 return RedirectToAction(nameof(Index));
             }
             return View(movie);
@@ -99,7 +100,7 @@ namespace Felix.Azure.MvcMovie.Controllers
         // GET: MvcMovies/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
-            var movie = await _repository.GetMovieByIdAsync(id);
+            var movie = await _dataAccess.GetMovieByIdAsync(id);
             if (movie == null)
             {
                 return NotFound();
@@ -113,7 +114,7 @@ namespace Felix.Azure.MvcMovie.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            await _repository.RemoveAsync(id);
+            await _dataAccess.RemoveAsync(id);
             return RedirectToAction(nameof(Index));
         }
     }

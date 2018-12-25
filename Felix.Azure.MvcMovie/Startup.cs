@@ -9,6 +9,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using StackExchange.Redis;
 using Swashbuckle.AspNetCore.Swagger;
+using Felix.Azure.MvcMovie.Redis;
+using Felix.Azure.MvcMovie.DataAccess;
 
 namespace Felix.Azure.MvcMovie
 {
@@ -92,6 +94,8 @@ namespace Felix.Azure.MvcMovie
         {
             services.AddScoped<AzureStorageCreator>();
             services.AddScoped<IMovieRepository, MovieRepository>();
+            services.AddScoped<IMovieCacheRepository, MovieCacheRepository>();
+            services.AddScoped<IMovieDataAccess, MovieDataAccess>();
             services.AddSingleton((svc) =>
             {
                 string cacheConnection = Configuration[SecretName];
