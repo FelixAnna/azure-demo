@@ -98,7 +98,7 @@ namespace Felix.Azure.MvcMovie
             services.AddScoped<IMovieDataAccess, MovieDataAccess>();
             services.AddSingleton((svc) =>
             {
-                string cacheConnection = Configuration[SecretName];
+                string cacheConnection = Configuration.GetConnectionString(SecretName);//Configuration[SecretName];
                 return ConnectionMultiplexer.Connect(cacheConnection);
             });
         }
