@@ -1,23 +1,24 @@
-﻿using Felix.Azure.MvcMovie.Repositories;
+﻿using Felix.Azure.MvcMovie.Cosmos;
+using Felix.Azure.MvcMovie.DataAccess;
 using Felix.Azure.MvcMovie.Entity;
+using Felix.Azure.MvcMovie.Entity.Model;
 using Felix.Azure.MvcMovie.Models;
+using Felix.Azure.MvcMovie.Repositories;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
-using System;
-using System.Linq;
 using System.Threading.Tasks;
-using Felix.Azure.MvcMovie.DataAccess;
 
 namespace Felix.Azure.MvcMovie.Controllers
 {
     public class MvcMoviesController : Controller
     {
         private readonly IMovieDataAccess _dataAccess;
+        private readonly DocumentDBRepository<Item> _documentDBRepository;
 
-        public MvcMoviesController(IMovieDataAccess dataAccess)
+        public MvcMoviesController(IMovieDataAccess dataAccess, DocumentDBRepository<Item> documentDBRepository)
         {
             _dataAccess = dataAccess;
+            _documentDBRepository = documentDBRepository;
         }
 
         // GET: MvcMovies
@@ -59,6 +60,7 @@ namespace Felix.Azure.MvcMovie.Controllers
             if (ModelState.IsValid)
             {
                 await _dataAccess.SaveAsync(movie);
+                await _documentDBRepository.CreateItemAsync(movie.AsItem());
                 return RedirectToAction(nameof(Index));
             }
 
@@ -92,6 +94,7 @@ namespace Felix.Azure.MvcMovie.Controllers
             if (ModelState.IsValid)
             {
                 await _dataAccess.SaveAsync(movie);
+                await _documentDBRepository.CreateItemAsync(movie.AsItem());
                 return RedirectToAction(nameof(Index));
             }
             return View(movie);
@@ -115,6 +118,7 @@ namespace Felix.Azure.MvcMovie.Controllers
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             await _dataAccess.RemoveAsync(id);
+            await _documentDBRepository.DeleteItemAsync($"{id}-id");
             return RedirectToAction(nameof(Index));
         }
     }

@@ -11,6 +11,9 @@ using StackExchange.Redis;
 using Swashbuckle.AspNetCore.Swagger;
 using Felix.Azure.MvcMovie.Redis;
 using Felix.Azure.MvcMovie.DataAccess;
+using Felix.Azure.MvcMovie.Cosmos;
+using Felix.Azure.MvcMovie.Entity.Model;
+using Felix.Azure.MvcMovie.Entity;
 
 namespace Felix.Azure.MvcMovie
 {
@@ -98,8 +101,24 @@ namespace Felix.Azure.MvcMovie
             services.AddScoped<IMovieDataAccess, MovieDataAccess>();
             services.AddSingleton((svc) =>
             {
-                string cacheConnection = Configuration.GetConnectionString(SecretName);//Configuration[SecretName];
+#if DEBUG
+                string cacheConnection = Configuration[SecretName];
+#else
+                string cacheConnection = Configuration.GetConnectionString(SecretName);
+#endif
                 return ConnectionMultiplexer.Connect(cacheConnection);
+            });
+
+            services.AddSingleton((svc) =>
+            {
+#if DEBUG
+                string endpoint = Configuration.GetConnectionString("endpoint");
+                string authkey = Configuration.GetConnectionString("authkey");
+#else
+                string endpoint = Configuration.GetConnectionString("endpoint");
+                string authkey = Configuration.GetConnectionString("authkey");
+#endif
+                return new DocumentDBRepository<Item>(endpoint, authkey);
             });
         }
     }
